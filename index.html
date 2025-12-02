@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Galgotias Scheduler</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="light">
+  <!-- Navbar -->
+<nav class="navbar">
+  <a href="https://galgotiacollege.edu/" target="_blank" rel="noopener noreferrer">
+    <img src="images.jpg" alt="Galgotias Logo" class="logo" />
+  </a>
+  <div class="nav-actions">
+    <button id="theme-toggle" type="button" aria-label="Toggle theme">🌗</button>
+    <button id="repeat-btn" type="button">Repeat</button>
+    <button id="login-btn" type="button" aria-label="Open login">
+      <svg viewBox="0 0 24 24" class="login-icon">
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4
+                 -4 1.79-4 4 1.79 4 4 4zm0 2
+                 c-2.67 0-8 1.34-8 4v2h16v-2
+                 c0-2.66-5.33-4-8-4z"/>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<!-- Repeat Popup -->
+<div id="repeat-popup" class="popup">
+  <div class="card">
+    <h3>Repeat Settings</h3>
+
+    <label>Date:</label>
+    <input type="date" id="repeat-date">
+
+    <label>Time:</label>
+    <input type="time" id="repeat-time">
+
+    <label>Repeat Count:</label>
+    <input type="number" id="repeat-count" placeholder="Repeat count">
+
+    <label>Interval (hours):</label>
+    <input type="number" id="repeat-interval" placeholder="Interval (hours)">
+
+    <button id="repeat-start">Start Repeat</button>
+    <button type="button" onclick="closePopup('repeat-popup')">Done</button>
+  </div>
+</div>
+
+
+  <!-- Main Layout -->
+  <main class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <button type="button" class="side-btn big-btn" onclick="toggleSection('email')">Add Mail</button>
+      <button type="button" class="side-btn big-btn" onclick="toggleSection('event')">Add Event</button>
+    </aside>
+
+    <!-- Main content (center column) -->
+    <div class="main-content">
+
+      <!-- Email Section -->
+      <section id="email-section" class="panel email-section">
+        <h2>Add Emails</h2>
+        <div class="email-input-row">
+          <input type="email" id="email-input" placeholder="Enter email" />
+          <button id="add-email" type="button">Add Mail</button>
+        </div>
+        <ul id="email-list"></ul>
+        <div class="email-actions">
+          <button id="send-selected-events" type="button">Send Selected Now</button>
+          <button id="send-all-events" type="button">Send All Now</button>
+        </div>
+      </section>
+
+      <!-- Event Section -->
+      <section id="event-section" class="panel event-section hidden">
+        <h2>Add Event</h2>
+
+        <div class="event-form">
+          <input type="text" id="event-subject" placeholder="Subject (Email Header)" />
+          <textarea id="event-description" placeholder="Write event description..."></textarea>
+
+          <div class="event-form-row">
+            <!-- WhatsApp-style attachment icon (visible by default) -->
+        <label id="attach-icon" class="attach-icon">
+          <input type="file" id="event-attachment" hidden multiple accept="*/*" />
+              <svg viewBox="0 0 24 24">
+                <path d="M18.364 5.636a5 5 0 0 0-7.07 0L5.636
+                         11.293a3 3 0 0 0 4.243 4.243l6.364-6.364
+                         a1 1 0 1 0-1.414-1.414l-6.364 6.364
+                         a1 1 0 0 1-1.414-1.414l5.657-5.657
+                         a3 3 0 1 1 4.243 4.243l-6.364 6.364
+                         a5 5 0 0 1-7.07-7.07l7.07-7.07
+                         a7 7 0 1 1 9.9 9.9l-6.364 6.364
+                         a1 1 0 0 0 1.414 1.414l6.364-6.364
+                         a7 7 0 0 0-9.9-9.9z"/>
+              </svg>
+            </label>
+
+            <button id="save-event-btn" type="button" class="save-btn">Save Event</button>
+          </div>
+        </div>
+
+        <div id="event-status" aria-live="polite" style="margin-top:8px; font-size:13px; color:var(--muted);"></div>
+
+        <ul class="event-list"></ul>
+      </section>
+
+    </div>
+
+    <!-- Right column: separate panels for Emails and Event cards -->
+    <aside class="right-column">
+      <div class="cards-panel email-panel hidden">
+        <h2>Emails Cards</h2>
+        <div id="email-cards" class="email-cards" aria-live="polite"></div>
+      </div>
+
+      <div class="cards-panel event-panel hidden">
+        <h2>Event Cards</h2>
+        <div id="event-cards" class="event-cards"></div>
+      </div>
+    </aside>
+<div id="message-popup" class="popup">
+  <div class="card">
+    <textarea></textarea>
+    <div class="message-attachments"></div>
+    <input type="file" id="popup-file" multiple>
+    <button id="popup-save">Save Description</button>
+  </div>
+</div>
+  </main>
+
+  <!-- Popups -->
+  <div id="repeat-popup" class="popup">
+    <div class="card">
+      <h3>Repeat Settings</h3>
+      <label>Count:</label>
+      <input type="number" placeholder="Times to repeat" />
+      <label>Hours:</label>
+      <input type="number" placeholder="Interval in hours" />
+      <button type="button" onclick="closePopup('repeat-popup')">Done</button>
+    </div>
+  </div>
+
+  <div id="login-popup" class="popup">
+    <div class="card">
+      <h3>Login</h3>
+      <input type="text" placeholder="Username or Email" />
+      <input type="password" placeholder="Password" />
+      <button type="button">Login</button>
+      <p class="forgot" onclick="showForgot()">Forgot Password?</p>
+    </div>
+  </div>
+
+  <div id="forgot-popup" class="popup">
+    <div class="card">
+      <h3>Forgot Password</h3>
+      <input type="email" placeholder="Enter your email" />
+      <button type="button">Send OTP</button>
+      <input type="text" maxlength="6" placeholder="Enter 6-digit OTP" />
+      <button type="button" onclick="verifyOTP()">Verify</button>
+    </div>
+  </div>
+
+  <div id="reset-popup" class="popup">
+    <div class="card">
+      <h3>Set New Password</h3>
+      <input type="password" placeholder="New Password" />
+      <button type="button" onclick="saveNewPassword()">Save</button>
+    </div>
+  </div>
+
+  <div id="message-popup" class="popup">
+    <div class="card">
+      <h3>New Message</h3>
+      <textarea placeholder="Write event details..."></textarea>
+      <div class="message-attachments" aria-live="polite"></div>
+      <button type="button" onclick="closePopup('message-popup')">Attach to Event</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
